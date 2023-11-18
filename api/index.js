@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import userRouter from "./routes/user.route.js"; // importing from 'default export', we can change name
 
 dotenv.config();
 const app = express();
@@ -16,3 +17,5 @@ mongoose
 app.listen(PORT, () => {
     console.log(`SERVER HAS LAUNCHED ON PORT >>>>>>>> ${PORT}`);
 });
+
+app.use("/api/user", userRouter);
