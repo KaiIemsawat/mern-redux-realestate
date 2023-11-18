@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js"; // importing from 'default export', we can change name
 import authRouter from "./routes/auth.route.js";
-import { errorHandler } from "./middleware/errorMiddleware.js";
+import { catchError } from "./middleware/errorMiddleware.js";
 
 dotenv.config();
 const app = express();
@@ -36,4 +36,4 @@ app.use("/api/auth", authRouter);
 //     });
 // });
 
-app.use(errorHandler);
+app.use(catchError);
