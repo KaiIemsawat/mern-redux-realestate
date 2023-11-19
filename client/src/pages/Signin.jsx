@@ -33,6 +33,7 @@ export default function SignIn() {
         }
 
         try {
+            // setLoading(true);
             dispatch(signInStart());
             const res = await fetch("/api/auth/sign-in", {
                 method: "POST",
