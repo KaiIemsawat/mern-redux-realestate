@@ -90,17 +90,21 @@ export default function SignUp() {
                     Sign In
                 </Link>
             </div>
-            {error && (
-                <div className="flex gap-2 mt-4 justify-center">
-                    <p className="text-red-600 -mt-2">Invalid Credentials</p>
-                </div>
-            )}
-            {(!formData.username || !formData.email || !formData.password) && (
+            {error &&
+            (!formData.username || !formData.email || !formData.password) ? (
                 <div className="flex gap-2 mt-4 justify-center">
                     <p className="text-red-600 -mt-2">
                         All fields need to be filled
                     </p>
                 </div>
+            ) : (
+                error && (
+                    <div className="flex gap-2 mt-4 justify-center">
+                        <p className="text-red-600 -mt-2">
+                            Invalid Credentials
+                        </p>
+                    </div>
+                )
             )}
         </div>
     );
