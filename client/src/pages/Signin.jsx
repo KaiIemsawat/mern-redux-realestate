@@ -6,6 +6,7 @@ import {
     signInStart,
     signInSuccess,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
     const [formData, setFormData] = useState({});
@@ -27,10 +28,10 @@ export default function SignIn() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.email || !formData.password) {
-            setError("Please fill in all fields");
-            return;
-        }
+        // if (!formData.email || !formData.password) {
+        //     setError("Please fill in all fields");
+        //     return;
+        // }
 
         try {
             // setLoading(true);
@@ -60,6 +61,7 @@ export default function SignIn() {
             // setError(error.message);
             dispatch(signInFailure(error.message));
         }
+        console.log(error);
     };
 
     return (
@@ -88,6 +90,7 @@ export default function SignIn() {
                 >
                     {loading ? "LOADING..." : "Sign In"}
                 </button>
+                <OAuth />
             </form>
             <div className="flex gap-2 mt-4 justify-center">
                 <span>Need an account? </span>
