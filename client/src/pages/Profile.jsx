@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import defaultProfile from "../../assets/defaultProfile.jpeg";
 
 import {
     getStorage,
@@ -15,7 +16,7 @@ import {
 } from "../redux/user/userSlice";
 
 export default function Profile() {
-    const { currentUser } = useSelector((state) => state.user);
+    const { currentUser, loading, error } = useSelector((state) => state.user);
     const fileRef = useRef(null);
     const [file, setFile] = useState(undefined);
     const [filePercentage, setFilePercentage] = useState(0);
@@ -83,6 +84,9 @@ export default function Profile() {
         }
     };
 
+    console.log(formData.avatar);
+    console.log(currentUser.avatar);
+
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl font-semibold text-center my-7 text-slate-500">
@@ -99,7 +103,11 @@ export default function Profile() {
                 <img
                     className="rounded-full h-24 w-24 object-cover cursor-pointer self-center my-4"
                     onClick={() => fileRef.current.click()}
-                    src={formData.avatar || currentUser.avatar}
+                    src={
+                        formData.avatar
+                            ? formData.avatar || currentUser.avatar
+                            : defaultProfile
+                    }
                     alt="avatar"
                 />
                 <p className="self-center">
@@ -140,8 +148,11 @@ export default function Profile() {
                     placeholder="password"
                     onChange={handleChange}
                 />
-                <button className="bg-slate-600 text-[#fdfdfd] p-3 rounded-lg uppercase hover:opacity-80 disabled:opacity-80 duration-1000">
-                    Update
+                <button
+                    className="bg-slate-600 text-[#fdfdfd] p-3 rounded-lg uppercase hover:opacity-80 disabled:opacity-80 duration-1000"
+                    disabled={loading}
+                >
+                    {loading ? "LOADING..." : "Update"}
                 </button>
             </form>
             <div className="flex justify-between mt-4">
