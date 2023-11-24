@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.route.js"; // importing from 'default export', we can change name
 import authRouter from "./routes/auth.route.js";
 import { catchError } from "./middleware/errorMiddleware.js";
+import listingRouter from "./routes/listing.route.js";
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ app.listen(PORT, () => {
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/listing", listingRouter);
 
 // app.use((err, req, res, next) => {
 //     const statusCode = err.statusCode || 500;
