@@ -339,7 +339,7 @@ export default function CreateListing() {
                             <div className="flex gap-4 w-full">
                                 <label
                                     htmlFor="images"
-                                    className="border border-sky-700 rounded-lg uppercase w-full cursor-pointer p-3 text-sky-700 hover:opacity-80 duration-1000 disabled:opacity-80 text-center"
+                                    className="border border-sky-700 rounded-lg uppercase w-full cursor-pointer p-3 text-sky-700 hover:text-sky-400 hover:border-sky-400 duration-1000 disabled:opacity-80 text-center"
                                 >
                                     Select Image(s)
                                 </label>
@@ -355,7 +355,7 @@ export default function CreateListing() {
                                 />
                             </div>
                             <button
-                                className="p-3 text-[#fdfdfd] bg-sky-700 rounded-lg uppercase hover:opacity-80 disabled:opacity-80 duration-1000"
+                                className="p-3 text-[#fdfdfd] bg-sky-700 rounded-lg uppercase hover:bg-sky-400 disabled:opacity-80 duration-1000"
                                 type="button"
                                 disabled={uploading}
                                 onClick={handleImageSubmit}

@@ -29,6 +29,8 @@ export default function Profile() {
     const [fileUploadError, setFileUploadError] = useState(false);
     const [formData, setFormData] = useState({});
     const [updateSuccess, setUpdateSuccess] = useState(false);
+    const [showListingsError, setShowListingsError] = useState(false);
+    const [userListings, setUserListings] = useState([]);
 
     const dispatch = useDispatch();
 
@@ -124,6 +126,22 @@ export default function Profile() {
         }
     };
 
+    const handleShowListings = async () => {
+        try {
+            setShowListingsError(false);
+            const res = await fetch(`/api/user/listings/${currentUser._id}`);
+            const data = await res.json();
+            if (data.success === false) {
+                setShowListingsError(true);
+                return;
+            }
+
+            setUserListings(data);
+        } catch (error) {
+            setShowListingsError(true);
+        }
+    };
+
     return (
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl font-semibold text-center my-7 text-slate-500">
@@ -195,6 +213,7 @@ export default function Profile() {
                 </Link>
             </form>
 
+            {/* Delete / Signout */}
             <div className="flex justify-between mt-4">
                 <span
                     className="text-red-600 cursor-pointer"
@@ -215,6 +234,57 @@ export default function Profile() {
                     {updateSuccess ? "UPDATED" : ""}
                 </p>
             </div>
+
+            {/* Show Listings */}
+            <button
+                className="border border-sky-700 rounded-lg p-3 uppercase text-sky-700 w-full hover:text-sky-400 hover:border-sky-400 duration-1000"
+                onClick={handleShowListings}
+            >
+                Show Listing
+            </button>
+            {showListingsError && (
+                <p className="text-xs text-red-600">
+                    "Error occur on showing listings"
+                </p>
+            )}
+
+            {userListings && userListings.length > 0 && (
+                <div>
+                    <h2 className="text-center mt-7 font-semibold text-xl text-slate-600">
+                        Your Listing
+                    </h2>
+                    {userListings.map((listing) => (
+                        <div
+                            key={listing._id}
+                            className=" p-3 border rounded-lg mt-4 flex justify-between"
+                        >
+                            <div className="flex justify-start gap-4  items-center">
+                                <Link to={`/listing/${listing._id}`}>
+                                    <img
+                                        className="w-25 h-20 object-contain rounded-lg"
+                                        src={listing.imageUrls[0]}
+                                        alt="Listing cover"
+                                    />
+                                </Link>
+                                <Link to={`/listing/${listing._id}`}>
+                                    <p className="text-slate-600 font-semibold hover:underline truncate">
+                                        {listing.name}
+                                    </p>
+                                </Link>
+                            </div>
+
+                            <div className="flex flex-col justify-between items-center p-2">
+                                <button className="uppercase text-green-600">
+                                    edit
+                                </button>
+                                <button className="uppercase text-red-600">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
