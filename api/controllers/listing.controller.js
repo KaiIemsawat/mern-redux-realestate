@@ -33,7 +33,7 @@ export const updateListing = async (req, res, next) => {
     try {
         const listing = await Listing.findById(req.params.id);
         if (!!!listing) {
-            console.log("Error here");
+            return next(errorHandler(500, "Internal error"));
         }
         if (!listing) {
             return next(errorHandler(404, "Listing not found..!"));
@@ -54,6 +54,18 @@ export const updateListing = async (req, res, next) => {
             { new: true }
         );
         res.status(200).json(updatedListing);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getListing = async (req, res, next) => {
+    try {
+        const listing = await Listing.findById(req.params.id);
+        if (!listing) {
+            return next(errorHandler(404), "Lising not found");
+        }
+        res.status(200).json(listing);
     } catch (error) {
         next(error);
     }
