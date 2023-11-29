@@ -15,6 +15,8 @@ import {
 } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
+import Contact from "../components/Contact";
+
 export default function Listing() {
     SwiperCore.use([Navigation]);
     const params = useParams();
@@ -25,9 +27,6 @@ export default function Listing() {
     const [contact, setContact] = useState(false);
 
     const { currentUser } = useSelector((state) => state.user);
-    console.log(currentUser, "Current User");
-    console.log(listing.userRef, "userRef");
-    console.log(currentUser._id);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -155,6 +154,17 @@ export default function Listing() {
                                     : "Unfurnished"}
                             </li>
                         </ul>
+                        {currentUser &&
+                            listing.userRef !== currentUser._id &&
+                            !contact && (
+                                <button
+                                    className="bg-slate-700 text-[#fdfdfd] rounded-lg uppercase hover:opacity-80 duration-1000 p-3"
+                                    onClick={() => setContact(true)}
+                                >
+                                    Contact Landlord
+                                </button>
+                            )}
+                        {contact && <Contact listing={listing} />}
                     </div>
                 </>
             )}
