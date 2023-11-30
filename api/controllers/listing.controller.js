@@ -70,3 +70,41 @@ export const getListing = async (req, res, next) => {
         next(error);
     }
 };
+
+// --- SEARCH ---
+export const getListings = async (req, res, next) => {
+    try {
+        // If no limit query params, use 9
+        const limit = parseInt(req.query.limit) || 9;
+        // If no specific start index, use index 0
+        const startIndex = parseInt(req.query.startIndex) || 0;
+
+        let offer = req.query.offer;
+        // If the value of 'offer' equals to 'undefined' or 'false'
+        // assign the value of 'offer' with both 'false' and 'true' (from database)
+        if (offer === "undefined" || offer === "false") {
+            offer = { $in: [false, true] };
+        }
+
+        let furnished = req.query.furnished;
+        if (furnished === "undefined" || furnished === "false") {
+            furnished = { $in: [false, true] };
+        }
+
+        let parking = req.query.parking;
+        if (parking === "undefined" || parking === "false") {
+            parking = { $in: [false, true] };
+        }
+
+        let type = req.query.type;
+        if (type === "undefined" || type === "all") {
+            type = { $in: ["sell", "rent"] };
+        }
+
+        const searchTerm = req.query.searchTerm || "";
+        const sort = req.query.sort || "createAt";
+        const order = req.query.order || "desc";
+    } catch (error) {
+        next(error);
+    }
+};
