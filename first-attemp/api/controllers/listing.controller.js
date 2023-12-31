@@ -82,17 +82,20 @@ export const getListings = async (req, res, next) => {
         let offer = req.query.offer;
         // If the value of 'offer' equals to 'undefined' or 'false'
         // assign the value of 'offer' with both 'false' and 'true' (from database)
-        if (offer === undefined || offer === "false") {
+        // if (offer === undefined || offer === "false") {
+        if (offer === undefined) {
             offer = { $in: [false, true] };
         }
 
         let furnished = req.query.furnished;
-        if (furnished === undefined || furnished === "false") {
+        // if (furnished === undefined || furnished === "false") {
+        if (furnished === undefined) {
             furnished = { $in: [false, true] };
         }
 
         let parking = req.query.parking;
-        if (parking === undefined || parking === "false") {
+        // if (parking === undefined || parking === "false") {
+        if (parking === undefined) {
             parking = { $in: [false, true] };
         }
 
