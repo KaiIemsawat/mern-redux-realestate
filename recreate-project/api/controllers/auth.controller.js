@@ -8,6 +8,12 @@ import generateToken from "../utils/generateToken.js";
 export const signup = async (req, res, next) => {
     const { username, email, password } = req.body;
 
+    const isUsernameUsed = await User.findOne({ username });
+    const isEmailExisted = await User.findOne({ email });
+    if (isEmailExisted || isUsernameUsed) {
+        next(errorHandle(400, "Username or email has been registered"));
+    }
+
     const hashedPass = bcryptjs.hashSync(password, 10);
     const newUser = new User({ username, email, password: hashedPass });
 

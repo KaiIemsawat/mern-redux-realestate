@@ -51,9 +51,8 @@ const SignUp = () => {
                 if (data.success === false) {
                     setLoading(false);
                     setError(data.message);
-                    if (data.message.includes("duplicate")) {
-                        toast.error("Invalid credentials");
-                    }
+
+                    toast.error(data.message);
                     return;
                 }
                 setLoading(false);
