@@ -112,12 +112,14 @@ const SignUp = () => {
                 </button>
             </form>
             <div className="flex gap-2 mt-4">
-                <p>Have an account ? </p>
-                <Link to={"/sign-in"}>
-                    <span className="text-primary-500 hover:text-effect-300 duration-200">
-                        Sign in
-                    </span>
-                </Link>
+                <p>
+                    Have an account ? &nbsp;Please&nbsp;
+                    <Link to={"/sign-in"}>
+                        <span className="text-primary-500 hover:text-effect-300 duration-200 font-semibold">
+                            sign in
+                        </span>
+                    </Link>
+                </p>
             </div>
         </div>
     );
