@@ -40,8 +40,6 @@ const SignIn = () => {
 
             const data = await res.json();
 
-            console.log("DATA", data);
-
             if (data.success === false) {
                 setLoading(false);
                 setError(data.message);
@@ -51,7 +49,7 @@ const SignIn = () => {
             }
             setLoading(false);
             setError(null);
-            toast.success("Your account has been created");
+            toast.success(`Welcome back ${data.username}`);
             navigate("/");
         } catch (error) {
             setLoading(false);
