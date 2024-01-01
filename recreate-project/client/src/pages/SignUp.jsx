@@ -19,7 +19,6 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
 
         // Handle empty fields
         if (
@@ -35,6 +34,7 @@ const SignUp = () => {
         }
 
         if (formData.password === formData.confirmPassword) {
+            setLoading(true);
             try {
                 const res = await fetch("/api/auth/signup", {
                     method: "POST",
@@ -43,6 +43,7 @@ const SignUp = () => {
                     },
                     body: JSON.stringify(formData),
                 });
+
                 const data = await res.json();
 
                 console.log("DATA", data);
@@ -50,7 +51,9 @@ const SignUp = () => {
                 if (data.success === false) {
                     setLoading(false);
                     setError(data.message);
-                    toast.error(data.message);
+                    if (data.message.includes("duplicate")) {
+                        toast.error("Invalid credentials");
+                    }
                     return;
                 }
                 setLoading(false);
@@ -60,7 +63,7 @@ const SignUp = () => {
             } catch (error) {
                 setLoading(false);
                 setError(error.message);
-                toast.error(error.message);
+                console.log(error.message);
             }
         } else {
             setLoading(false);
