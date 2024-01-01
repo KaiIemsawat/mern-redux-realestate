@@ -54,3 +54,41 @@ export const signin = async (req, res, next) => {
         next(error);
     }
 };
+
+export const google = async (req, res, next) => {
+    try {
+        // In previous cases, 'email' ot other value come from user input (req.body)
+        // In this case, 'email' come from 'data' in OAth.jsx (from google)
+        const user = await User.findOne({ email: req.body.email });
+        if (user) {
+            const { password: pass, ...rest } = user._doc;
+            generateToken(res, user._id);
+            res.status(200).json(rest);
+        } else {
+            // Create tempory password since there is no password provided from google
+            const generatedPassword =
+                Math.random().toString(36).slice(-8) +
+                Math.random().toString(36).slice(-8); // 36 mean 0-9 and a-z. slice(-8) to take only last 8
+            const hashedPass = bcryptjs.hashSync(generatedPassword, 10);
+            const newUser = new User({
+                // rename username to 'name+lastname+randomnumber'
+                username:
+                    req.body.name.replace(" ", "").toLowerCase() +
+                    Math.random().toString(36).slice(-4),
+                email: req.body.email,
+                password: hashedPass,
+                avatar: req.body.photo,
+            });
+            try {
+                await newUser.save();
+                const { password: pass, ...rest } = newUser._doc;
+                generateToken(res, newUser._id);
+                res.status(200).json(rest);
+            } catch (error) {
+                next(error);
+            }
+        }
+    } catch (error) {
+        next(error);
+    }
+};

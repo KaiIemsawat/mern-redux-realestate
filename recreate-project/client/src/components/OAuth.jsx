@@ -28,6 +28,7 @@ function OAuth() {
             // convert to json and save as 'data'
             // Then dispatch
             const data = await res.json();
+            console.log(data);
             dispatch(signInSuccess(data));
         } catch (error) {
             console.log("Unable to sign in with GOOGLE", error);
