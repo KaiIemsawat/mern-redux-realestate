@@ -1,5 +1,4 @@
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 import { errorHandle } from "../middleware/errorHandle.js";
 import User from "../models/user.model.js";
@@ -12,6 +11,10 @@ export const signup = async (req, res, next) => {
     const isEmailExisted = await User.findOne({ email });
     if (isEmailExisted || isUsernameUsed) {
         next(errorHandle(400, "Username or email has been registered"));
+    }
+
+    if (password.length <= 5) {
+        next(errorHandle(403, "Password need 6 or more characters"));
     }
 
     const hashedPass = bcryptjs.hashSync(password, 10);
