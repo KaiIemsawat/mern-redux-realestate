@@ -14,6 +14,7 @@ export const errorMiddleware = (err, req, res, next) => {
     });
 };
 
+// error handler with explicit code/message
 export const errorHandle = (statusCode, message) => {
     const error = new Error();
     error.statusCode = statusCode;
