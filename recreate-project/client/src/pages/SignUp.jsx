@@ -2,6 +2,7 @@ import { set } from "mongoose";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import OAuth from "../components/Oauth";
 
 const SignUp = () => {
     const [formData, setFormData] = useState({});
@@ -110,6 +111,7 @@ const SignUp = () => {
                 >
                     {loading ? "Loading" : "Sign Up"}
                 </button>
+                <OAuth />
             </form>
             <div className="flex gap-2 mt-4">
                 <p>
