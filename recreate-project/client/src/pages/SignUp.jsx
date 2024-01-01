@@ -59,7 +59,7 @@ const SignUp = () => {
                 setLoading(false);
                 setError(null);
                 toast.success("Your account has been created");
-                navigate("/sign-in");
+                navigate("/");
             } catch (error) {
                 setLoading(false);
                 setError(error.message);
