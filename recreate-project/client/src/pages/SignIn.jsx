@@ -32,8 +32,8 @@ const SignIn = () => {
 
         // Handle empty fields
         if (!formData.email || !formData.password) {
-            setError("Please fill in all fields");
-            toast.error(error);
+            // setError("Please fill in all fields");
+            toast.error("Please fill in all fields");
             setLoading(false);
             return;
         }
