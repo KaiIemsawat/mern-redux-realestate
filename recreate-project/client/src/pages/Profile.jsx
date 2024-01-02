@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
     getDownloadURL,
     getStorage,
@@ -8,6 +8,11 @@ import {
 } from "firebase/storage";
 
 import { app } from "../firebase.js";
+import {
+    updateUserFailure,
+    updateUserStart,
+    updateUserSuccess,
+} from "../redux/user/userSlice.js";
 
 const Profile = () => {
     const { currentUser } = useSelector((state) => state.user);
@@ -16,6 +21,10 @@ const Profile = () => {
     const [fileUploadError, setFileUploadError] = useState(false);
     const [formData, setFormData] = useState({});
     const [showSuccessfulMsg, setShowSuccessfulMsg] = useState(false);
+
+    const dispatch = useDispatch();
+
+    console.log(formData);
 
     const fileRef = useRef(null);
 
@@ -61,9 +70,37 @@ const Profile = () => {
         }
     }, [uploadPercentage]);
 
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            dispatch(updateUserStart());
+            const res = await fetch(`/api/user/update/${currentUser._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await res.json();
+            if (data.success === false) {
+                dispatch(updateUserFailure(data.message));
+                return;
+            }
+            dispatch(updateUserSuccess(data));
+        } catch (error) {
+            dispatch(updateUserFailure(error.message));
+        }
+    };
+
     return (
         <div className="p-3 max-w-lg mx-auto">
-            <form className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="flex justify-between mt-7 mb-4 items-center">
                     <div className="flex gap-3 items-center">
                         {/* Hidden input that will take effect when image is clicked  */}
@@ -114,18 +151,23 @@ const Profile = () => {
                     id="username"
                     type="text"
                     placeholder="username"
+                    defaultValue={currentUser.username}
+                    onChange={handleChange}
                 />
                 <input
                     className="border p-3 rounded-lg focus:outline-none"
                     id="email"
                     type="text"
                     placeholder="email"
+                    defaultValue={currentUser.email}
+                    onChange={handleChange}
                 />
                 <input
                     className="border p-3 rounded-lg focus:outline-none"
                     id="password"
-                    type="text"
+                    type="password"
                     placeholder="password"
+                    onChange={handleChange}
                 />
                 <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200">
                     update
