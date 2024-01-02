@@ -22,6 +22,7 @@ const Profile = () => {
     const [fileUploadError, setFileUploadError] = useState(false);
     const [formData, setFormData] = useState({});
     const [showSuccessfulMsg, setShowSuccessfulMsg] = useState(false);
+    const [updateSuccess, setUpdateSuccess] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -66,10 +67,19 @@ const Profile = () => {
 
             const timeout = setTimeout(() => {
                 setShowSuccessfulMsg(false);
-            }, 5000);
+            }, 3000);
             return () => clearTimeout(timeout);
         }
     }, [uploadPercentage]);
+
+    useEffect(() => {
+        if (updateSuccess) {
+            const timeout = setTimeout(() => {
+                setUpdateSuccess(false);
+            }, 3000);
+            return () => clearTimeout(timeout);
+        }
+    }, [updateSuccess]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -94,6 +104,7 @@ const Profile = () => {
                 return;
             }
             dispatch(updateUserSuccess(data));
+            setUpdateSuccess(true);
         } catch (error) {
             dispatch(updateUserFailure(error.message));
         }
@@ -170,18 +181,41 @@ const Profile = () => {
                     placeholder="password"
                     onChange={handleChange}
                 />
-                <button
+                {/* <button
                     className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200"
                     disabled={loading}
                 >
                     {loading ? "Loading..." : "Update"}
-                </button>
+                </button> */}
+
+                {loading ? (
+                    <button
+                        className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase"
+                        disabled
+                    >
+                        Loading...
+                    </button>
+                ) : updateSuccess ? (
+                    <button
+                        className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase"
+                        disabled
+                    >
+                        details Updated
+                    </button>
+                ) : (
+                    <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200">
+                        Update
+                    </button>
+                )}
             </form>
+
+            {/* ERROR MESSAGE */}
             {error ? (
                 <div className="mt-2 text-end">
                     <p className="text-error text-sm font-semibold">{error}</p>
                 </div>
             ) : null}
+
             <div className="flex justify-between mt-5">
                 <span className="text-primary-500 hover:text-error duration-200 cursor-pointer">
                     Delete Account
