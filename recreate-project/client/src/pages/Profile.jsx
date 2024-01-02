@@ -28,6 +28,7 @@ const Profile = () => {
         upLoadTask.on(
             "state_changed",
             (snapshot) => {
+                setFileUploadError(false);
                 const progress =
                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 setUploadPercentage(Math.round(progress));
@@ -76,28 +77,28 @@ const Profile = () => {
                         />
                         <img
                             className="rounded-full h-24 w-24 object-cover cursor-pointer"
-                            src={currentUser.avatar}
+                            src={formData.avatar || currentUser.avatar}
                             alt="profile img"
                             onClick={() => fileRef.current.click()}
                         />
                         <p>
                             {fileUploadError ? (
                                 <>
-                                    <p className="text-error">
+                                    <p className="text-error text-sm font-semibold">
                                         Image uploading error.
                                     </p>
-                                    <p className="text-error">
+                                    <p className="text-error text-sm font-semibold">
                                         Please try another file.
                                     </p>
                                 </>
                             ) : uploadPercentage > 0 &&
                               uploadPercentage < 100 ? (
-                                <span className="text-effect-500">
+                                <span className="text-effect-500 text-sm font-semibold">
                                     {uploadPercentage} % upload
                                 </span>
                             ) : (
                                 showSuccessfulMsg && (
-                                    <span className="text-effect-500">
+                                    <span className="text-effect-500 text-sm font-semibold">
                                         File successfully uploaded
                                     </span>
                                 )
