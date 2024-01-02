@@ -15,7 +15,8 @@ import {
 } from "../redux/user/userSlice.js";
 
 const Profile = () => {
-    const { currentUser } = useSelector((state) => state.user);
+    const { currentUser, loading, error } = useSelector((state) => state.user);
+
     const [file, setFile] = useState(undefined);
     const [uploadPercentage, setUploadPercentage] = useState(0);
     const [fileUploadError, setFileUploadError] = useState(false);
@@ -169,10 +170,18 @@ const Profile = () => {
                     placeholder="password"
                     onChange={handleChange}
                 />
-                <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200">
-                    update
+                <button
+                    className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200"
+                    disabled={loading}
+                >
+                    {loading ? "Loading..." : "Update"}
                 </button>
             </form>
+            {error ? (
+                <div className="mt-2 text-end">
+                    <p className="text-error text-sm font-semibold">{error}</p>
+                </div>
+            ) : null}
             <div className="flex justify-between mt-5">
                 <span className="text-primary-500 hover:text-error duration-200 cursor-pointer">
                     Delete Account

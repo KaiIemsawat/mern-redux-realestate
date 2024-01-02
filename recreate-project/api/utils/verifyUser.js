@@ -1,6 +1,6 @@
-import { errorHandle } from "../middleware/errorHandle.js";
-
 import jwt from "jsonwebtoken";
+
+import { errorHandle } from "../middleware/errorHandle.js";
 
 export const verifyToken = (req, res, next) => {
     const token = req.cookies.access_token;
