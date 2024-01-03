@@ -1,4 +1,83 @@
+import {
+    getDownloadURL,
+    getStorage,
+    ref,
+    uploadBytesResumable,
+} from "firebase/storage";
+import { useState } from "react";
+
+import { app } from "../firebase";
+import { toast } from "react-toastify";
+
 const CreateListing = () => {
+    const [files, setFiles] = useState([]);
+    const [formData, setFormData] = useState({
+        imageUrls: [],
+    });
+    const [imageUploadError, setImageUploadError] = useState(false);
+
+    console.log(formData);
+    console.log(files);
+
+    let numOfFiles = files.length;
+
+    const handleImageSubmit = (e) => {
+        if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+            const promises = [];
+
+            for (let i = 0; i < files.length; i++) {
+                promises.push(storeImage(files[i]));
+            }
+            Promise.all(promises)
+                .then((urls) => {
+                    setFormData({
+                        ...formData,
+                        imageUrls: formData.imageUrls.concat(urls),
+                    });
+                    setImageUploadError(false);
+                })
+                .catch((err) => {
+                    setImageUploadError(
+                        "Image upload failed (2mb max per image)"
+                    );
+                    toast.error("Image upload failed (2mb max per image)");
+                    console.log(err);
+                    setFiles([]);
+                });
+        } else {
+            setImageUploadError("Maximum number of upload images is 6");
+            toast.error("Maximum number of upload images is 6");
+            setFiles([]);
+        }
+    };
+
+    const storeImage = async (file) => {
+        return new Promise((resolve, reject) => {
+            const storage = getStorage(app);
+            const fileName = new Date().getTime + file.name;
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(`Upload is ${progress}% done`);
+                },
+                (error) => {
+                    reject(error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(
+                        (downloadURL) => {
+                            resolve(downloadURL);
+                        }
+                    );
+                }
+            );
+        });
+    };
+
     return (
         <main className="p-3 max-w-4xl mx-auto">
             <h1 className="text-3xl text-end font-semibold text-primary-500 mt-7 mb-4">
@@ -77,62 +156,66 @@ const CreateListing = () => {
                     </div>
 
                     {/* Bed / Bath / Prices */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div className="flex items-center gap-2">
-                            <input
-                                className="border rounded-lg p-3"
-                                type="number"
-                                id="bedrooms"
-                                min="1"
-                                max="10"
-                                required
-                            />
-                            <p className="text-primary-500 font-semibold">
-                                Bedrooms
-                            </p>
+                    <div className="grid grid-cols-1 gap-6">
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    className="border rounded-lg p-3"
+                                    type="number"
+                                    id="bedrooms"
+                                    min="1"
+                                    max="10"
+                                    required
+                                />
+                                <p className="text-primary-500 font-semibold">
+                                    Bedrooms
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    className="border rounded-lg p-3"
+                                    type="number"
+                                    id="bathrooms"
+                                    min="1"
+                                    max="10"
+                                    required
+                                />
+                                <p className="text-primary-500 font-semibold">
+                                    Bathrooms
+                                </p>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                className="border rounded-lg p-3"
-                                type="number"
-                                id="bathrooms"
-                                min="1"
-                                max="10"
-                                required
-                            />
-                            <p className="text-primary-500 font-semibold">
-                                Bathrooms
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                className="border rounded-lg p-3"
-                                type="number"
-                                id="regularPrice"
-                                min="2000"
-                                required
-                            />
-                            <p className="text-primary-500 font-semibold">
-                                Regular Price&nbsp;
-                                <span className="font-light text-secondary-400 text-sm">
-                                    ($ / month)
-                                </span>
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <input
-                                className="border rounded-lg p-3"
-                                type="number"
-                                id="discountPrice"
-                                min="1500"
-                                required
-                            />
-                            <p className="text-primary-500 font-semibold">
-                                Discount Price&nbsp;
-                                <span className="font-light text-secondary-400 text-sm">
-                                    ($ / month)
-                                </span>
-                            </p>
+                        <div className="grid lg:grid-cols-2 gap-6">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    className="border rounded-lg p-3"
+                                    type="number"
+                                    id="regularPrice"
+                                    min="2000"
+                                    required
+                                />
+                                <p className="text-primary-500 font-semibold">
+                                    Regular Price&nbsp;
+                                    <span className="font-light text-secondary-400 text-sm">
+                                        ($ / month)
+                                    </span>
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    className="border rounded-lg p-3"
+                                    type="number"
+                                    id="discountPrice"
+                                    min="1500"
+                                    required
+                                />
+                                <p className="text-primary-500 font-semibold">
+                                    Discount Price&nbsp;
+                                    <span className="font-light text-secondary-400 text-sm">
+                                        ($ / month)
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -150,21 +233,46 @@ const CreateListing = () => {
                                 className="flex-1 text-center font-semibold border border-secondary-400 hover:border-effect-300 hover:text-primary-300 rounded-lg uppercase cursor-pointer p-3 text-primary-500 duration-200"
                                 htmlFor="images"
                             >
-                                Select Image(s)
+                                Select Image(s){" "}
+                                {numOfFiles > 0 ? (
+                                    <span className="font-light text-secondary-400 text-sm">
+                                        : {numOfFiles} file(s) has been selected
+                                    </span>
+                                ) : null}
                             </label>
                             <input
                                 type="file"
                                 id="images"
                                 accept="image/*"
+                                onChange={(e) => setFiles(e.target.files)}
                                 multiple
                                 hidden
                             />
-                            <button className="font-semibold border border-optional-400 hover:border-effect-300 hover:text-primary-300 rounded-lg uppercase cursor-pointer p-3 text-primary-500 duration-200">
+                            <button
+                                className="font-semibold border border-optional-400 hover:border-effect-300 hover:text-primary-300 rounded-lg uppercase cursor-pointer p-3 text-primary-500 duration-200"
+                                type="button"
+                                onClick={handleImageSubmit}
+                            >
                                 Upload
                             </button>
                         </div>
                     </div>
                 </div>
+
+                {/* PREVIEW IMAGES */}
+                {formData.imageUrls.length > 0 &&
+                    formData.imageUrls.length < 7 && (
+                        <div className="grid sm:grid-cols-2 gap-6 mt-4">
+                            {formData.imageUrls.map((url) => (
+                                <img
+                                    key={url}
+                                    className="w-60 h-40 object-cover rounded-lg "
+                                    src={url}
+                                    alt="Listing Img"
+                                />
+                            ))}
+                        </div>
+                    )}
                 <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4">
                     Submit listing
                 </button>
