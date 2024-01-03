@@ -181,12 +181,6 @@ const Profile = () => {
                     placeholder="password"
                     onChange={handleChange}
                 />
-                {/* <button
-                    className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200"
-                    disabled={loading}
-                >
-                    {loading ? "Loading..." : "Update"}
-                </button> */}
 
                 {loading ? (
                     <button
