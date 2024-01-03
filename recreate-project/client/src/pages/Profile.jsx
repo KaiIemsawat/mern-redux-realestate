@@ -7,6 +7,7 @@ import {
     uploadBytesResumable,
 } from "firebase/storage";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 import { app } from "../firebase.js";
 import {
@@ -256,6 +257,16 @@ const Profile = () => {
                     <p className="text-error text-sm font-semibold">{error}</p>
                 </div>
             ) : null}
+
+            {/* CREATE LISTING BTN */}
+            <div className="flex mt-5 mb-4">
+                <Link
+                    className="bg-optional-400 text-primary-500 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 w-full text-center"
+                    to="/create-listing"
+                >
+                    Create Listing
+                </Link>
+            </div>
 
             {/* DELETE ACCOUNT / SIGNOUT */}
             <div className="flex justify-between mt-5">
