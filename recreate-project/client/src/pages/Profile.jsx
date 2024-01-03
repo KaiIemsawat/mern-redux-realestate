@@ -6,12 +6,16 @@ import {
     ref,
     uploadBytesResumable,
 } from "firebase/storage";
+import { toast } from "react-toastify";
 
 import { app } from "../firebase.js";
 import {
     deleteUserFailure,
     deleteUserStart,
     deleteUserSuccess,
+    signoutUserFailure,
+    signoutUserStart,
+    signoutUserSuccess,
     updateUserFailure,
     updateUserStart,
     updateUserSuccess,
@@ -123,11 +127,32 @@ const Profile = () => {
             const data = await res.json();
             if (data.success === false) {
                 dispatch(deleteUserFailure(data.message));
+                toast.error(error.message);
                 return;
             }
             dispatch(deleteUserSuccess(data));
+            toast.success("Account has been deleted");
         } catch (error) {
             dispatch(deleteUserFailure(error.message));
+            toast.error(error.message);
+        }
+    };
+
+    const handleSignout = async () => {
+        try {
+            dispatch(signoutUserStart());
+            const res = await fetch("/api/auth/signout");
+            const data = await res.json();
+            if (data.success === false) {
+                dispatch(signoutUserFailure(data.message));
+                toast.error(error.message);
+                return;
+            }
+            dispatch(signoutUserSuccess(data));
+            toast.success("You have signed out");
+        } catch (error) {
+            dispatch(signoutUserFailure(error.message));
+            toast.error(error.message);
         }
     };
 
@@ -151,6 +176,8 @@ const Profile = () => {
                             alt="profile img"
                             onClick={() => fileRef.current.click()}
                         />
+
+                        {/* UPLOAD MESSAGES */}
                         <p>
                             {fileUploadError ? (
                                 <>
@@ -203,6 +230,7 @@ const Profile = () => {
                     onChange={handleChange}
                 />
 
+                {/* BUTTON */}
                 {loading ? (
                     <button
                         className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase"
@@ -231,6 +259,7 @@ const Profile = () => {
                 </div>
             ) : null}
 
+            {/* DELETE ACCOUNT / SIGNOUT */}
             <div className="flex justify-between mt-5">
                 <span
                     className="text-primary-500 hover:text-error duration-200 cursor-pointer"
@@ -238,7 +267,10 @@ const Profile = () => {
                 >
                     Delete Account
                 </span>
-                <span className="text-primary-500 hover:text-warning duration-200 cursor-pointer">
+                <span
+                    className="text-primary-500 hover:text-warning duration-200 cursor-pointer"
+                    onClick={handleSignout}
+                >
                     Sign out
                 </span>
             </div>
