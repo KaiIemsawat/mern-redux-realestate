@@ -33,8 +33,6 @@ const Profile = () => {
 
     const dispatch = useDispatch();
 
-    console.log(formData);
-
     const fileRef = useRef(null);
 
     const handleFileUpload = (file) => {
