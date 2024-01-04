@@ -16,6 +16,7 @@ const CreateListing = () => {
         imageUrls: [],
     });
     const [imageUploadError, setImageUploadError] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     console.log(formData);
     console.log(files);
@@ -24,6 +25,8 @@ const CreateListing = () => {
 
     const handleImageSubmit = (e) => {
         if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+            setUploading(true);
+            setImageUploadError(false);
             const promises = [];
 
             for (let i = 0; i < files.length; i++) {
@@ -36,13 +39,14 @@ const CreateListing = () => {
                         imageUrls: formData.imageUrls.concat(urls),
                     });
                     setImageUploadError(false);
+                    setUploading(false);
                 })
                 .catch((err) => {
                     setImageUploadError(
                         "Image upload failed (2mb max per image)"
                     );
+                    setUploading(false);
                     toast.error("Image upload failed (2mb max per image)");
-                    console.log(err);
                     setFiles([]);
                 });
         } else {
@@ -51,6 +55,7 @@ const CreateListing = () => {
             );
             toast.error("The number of upload images allowed is 1 to 6");
             setFiles([]);
+            setUploading(false);
         }
     };
 
@@ -78,6 +83,13 @@ const CreateListing = () => {
                     );
                 }
             );
+        });
+    };
+
+    const handleRemoveImage = (index) => {
+        setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.filter((_, i) => i !== index),
         });
     };
 
@@ -160,7 +172,7 @@ const CreateListing = () => {
 
                     {/* Bed / Bath / Prices */}
                     <div className="grid grid-cols-1 gap-6">
-                        <div className="grid sm:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 gap-6">
                             <div className="flex items-center gap-2">
                                 <input
                                     className="border rounded-lg p-3"
@@ -228,7 +240,7 @@ const CreateListing = () => {
                             Images :&nbsp;
                             <span className="font-light text-secondary-400 text-sm">
                                 Maximum 6 images (The first image will be the
-                                cover)
+                                cover). Press 'ADD' once selected
                             </span>
                         </p>
                         <div className="flex gap-4">
@@ -239,8 +251,7 @@ const CreateListing = () => {
                                 Select Image(s){" "}
                                 {numOfFiles > 0 ? (
                                     <span className="font-light text-secondary-400 text-sm">
-                                        : {numOfFiles} image(s) has been
-                                        selected
+                                        : {numOfFiles} image(s) has been added
                                     </span>
                                 ) : null}
                             </label>
@@ -257,7 +268,7 @@ const CreateListing = () => {
                                 type="button"
                                 onClick={handleImageSubmit}
                             >
-                                Upload
+                                Add
                             </button>
                         </div>
                     </div>
@@ -267,23 +278,31 @@ const CreateListing = () => {
                 {formData.imageUrls.length > 0 &&
                     formData.imageUrls.length < 7 && (
                         <div className="grid sm:grid-cols-2 gap-6 mt-4">
-                            {formData.imageUrls.map((url) => (
-                                <div className="flex items-end gap-4 p-4 border rounded-lg justify-between">
+                            {formData.imageUrls.map((url, index) => (
+                                <div
+                                    className="relative w-80 sm:w-60 md:w-80 h-40 rounded-lg overflow-hidden flex justify-self-center"
+                                    key={url}
+                                >
                                     <img
-                                        key={url}
-                                        className="w-80 h-40 object-cover rounded-lg "
+                                        className="object-cover w-full h-full"
                                         src={url}
                                         alt="Listing Img"
                                     />
-                                    <button className="text-optional-500 hover:text-error duration-200">
+                                    <button
+                                        className="absolute text-optional-500 hover:text-error duration-200 text-lg bottom-2 right-2 opacity-50 hover:opacity-100"
+                                        onClick={() => handleRemoveImage(index)}
+                                    >
                                         <FaWindowClose />
                                     </button>
                                 </div>
                             ))}
                         </div>
                     )}
-                <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4">
-                    Submit listing
+                <button
+                    className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4"
+                    disabled={uploading}
+                >
+                    {uploading ? "Uploading" : "Submit Listing"}
                 </button>
             </form>
         </main>
