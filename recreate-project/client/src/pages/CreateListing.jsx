@@ -5,6 +5,7 @@ import {
     uploadBytesResumable,
 } from "firebase/storage";
 import { useState } from "react";
+import { FaWindowClose } from "react-icons/fa";
 
 import { app } from "../firebase";
 import { toast } from "react-toastify";
@@ -19,7 +20,7 @@ const CreateListing = () => {
     console.log(formData);
     console.log(files);
 
-    let numOfFiles = files.length;
+    let numOfFiles = formData.imageUrls.length;
 
     const handleImageSubmit = (e) => {
         if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -45,8 +46,10 @@ const CreateListing = () => {
                     setFiles([]);
                 });
         } else {
-            setImageUploadError("Maximum number of upload images is 6");
-            toast.error("Maximum number of upload images is 6");
+            setImageUploadError(
+                "The number of upload images allowed is 1 to 6"
+            );
+            toast.error("The number of upload images allowed is 1 to 6");
             setFiles([]);
         }
     };
@@ -220,7 +223,7 @@ const CreateListing = () => {
                     </div>
 
                     {/* Image file uploader */}
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1">
                         <p className="font-semibold text-primary-500">
                             Images :&nbsp;
                             <span className="font-light text-secondary-400 text-sm">
@@ -236,7 +239,8 @@ const CreateListing = () => {
                                 Select Image(s){" "}
                                 {numOfFiles > 0 ? (
                                     <span className="font-light text-secondary-400 text-sm">
-                                        : {numOfFiles} file(s) has been selected
+                                        : {numOfFiles} image(s) has been
+                                        selected
                                     </span>
                                 ) : null}
                             </label>
@@ -264,12 +268,17 @@ const CreateListing = () => {
                     formData.imageUrls.length < 7 && (
                         <div className="grid sm:grid-cols-2 gap-6 mt-4">
                             {formData.imageUrls.map((url) => (
-                                <img
-                                    key={url}
-                                    className="w-60 h-40 object-cover rounded-lg "
-                                    src={url}
-                                    alt="Listing Img"
-                                />
+                                <div className="flex items-end gap-4 p-4 border rounded-lg justify-between">
+                                    <img
+                                        key={url}
+                                        className="w-80 h-40 object-cover rounded-lg "
+                                        src={url}
+                                        alt="Listing Img"
+                                    />
+                                    <button className="text-optional-500 hover:text-error duration-200">
+                                        <FaWindowClose />
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     )}
