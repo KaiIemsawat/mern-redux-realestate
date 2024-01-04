@@ -7,7 +7,7 @@ export const createListing = async (req, res, next) => {
 
     const isNameUsed = await Listing.findOne({ name });
     if (isNameUsed) {
-        next(errorHandle(400), "Listing name has been used");
+        next(errorHandle(400, "Listing name has been used"));
         return;
     }
     try {

@@ -174,7 +174,7 @@ const CreateListing = () => {
             if (data.success === false) {
                 console.log(data);
                 setError(data.message);
-                toast.error("Please check all fields are valid");
+                toast.error(data.message);
             }
         } catch (error) {
             setError(error.message);
