@@ -14,6 +14,17 @@ const CreateListing = () => {
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({
         imageUrls: [],
+        name: "",
+        description: "",
+        address: "",
+        regularPrice: 1500,
+        discountPrice: 1200,
+        type: "rent",
+        bathrooms: 1,
+        bedrooms: 1,
+        furnished: false,
+        parking: false,
+        offer: false,
     });
     const [imageUploadError, setImageUploadError] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -93,6 +104,37 @@ const CreateListing = () => {
         });
     };
 
+    const handleChange = (e) => {
+        if (e.target.id === "sale" || e.target.id === "rent") {
+            setFormData({
+                ...formData,
+                type: e.target.id,
+            });
+        }
+
+        if (
+            e.target.id === "parking" ||
+            e.target.id === "furnished" ||
+            e.target.id === "offer"
+        ) {
+            setFormData({
+                ...formData,
+                [e.target.id]: e.target.checked,
+            });
+        }
+
+        if (
+            e.target.type === "number" ||
+            e.target.type === "text" ||
+            e.target.type === "textarea"
+        ) {
+            setFormData({
+                ...formData,
+                [e.target.id]: e.target.value,
+            });
+        }
+    };
+
     return (
         <main className="p-3 max-w-4xl mx-auto">
             <h1 className="text-3xl text-end font-semibold text-primary-500 mt-7 mb-4">
@@ -109,7 +151,8 @@ const CreateListing = () => {
                         maxLength="60"
                         minLength="2"
                         required
-                        // onChange={handleChange}
+                        onChange={handleChange}
+                        value={formData.name}
                     />
                     <textarea
                         className="border p-3 rounded-lg focus:outline-none"
@@ -117,7 +160,8 @@ const CreateListing = () => {
                         type="text"
                         placeholder="description"
                         required
-                        // onChange={handleChange}
+                        onChange={handleChange}
+                        value={formData.description}
                     />
                     <input
                         className="border p-3 rounded-lg focus:outline-none"
@@ -125,19 +169,32 @@ const CreateListing = () => {
                         type="text"
                         placeholder="address"
                         required
-                        // onChange={handleChange}
+                        onChange={handleChange}
+                        value={formData.address}
                     />
 
                     {/* Checkboxes */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-2">
                         <div className="flex gap-2">
-                            <input className="w-5" type="checkbox" id="sale" />
+                            <input
+                                className="w-5"
+                                type="checkbox"
+                                id="sale"
+                                onChange={handleChange}
+                                checked={formData.type === "sale"}
+                            />
                             <span className="text-primary-500 font-semibold">
                                 Sell
                             </span>
                         </div>
                         <div className="flex gap-2">
-                            <input className="w-5" type="checkbox" id="rent" />
+                            <input
+                                className="w-5"
+                                type="checkbox"
+                                id="rent"
+                                onChange={handleChange}
+                                checked={formData.type === "rent"}
+                            />
                             <span className="text-primary-500 font-semibold">
                                 Rent
                             </span>
@@ -147,6 +204,8 @@ const CreateListing = () => {
                                 className="w-5"
                                 type="checkbox"
                                 id="parking"
+                                onChange={handleChange}
+                                checked={formData.parking}
                             />
                             <span className="text-primary-500 font-semibold">
                                 Parking
@@ -157,13 +216,21 @@ const CreateListing = () => {
                                 className="w-5"
                                 type="checkbox"
                                 id="furnished"
+                                onChange={handleChange}
+                                checked={formData.furnished}
                             />
                             <span className="text-primary-500 font-semibold">
                                 Furnished
                             </span>
                         </div>
                         <div className="flex gap-2">
-                            <input className="w-5" type="checkbox" id="offer" />
+                            <input
+                                className="w-5"
+                                type="checkbox"
+                                id="offer"
+                                onChange={handleChange}
+                                checked={formData.offer}
+                            />
                             <span className="text-primary-500 font-semibold">
                                 Offer
                             </span>
@@ -181,6 +248,8 @@ const CreateListing = () => {
                                     min="1"
                                     max="10"
                                     required
+                                    onChange={handleChange}
+                                    value={formData.bedrooms}
                                 />
                                 <p className="text-primary-500 font-semibold">
                                     Bedrooms
@@ -194,6 +263,8 @@ const CreateListing = () => {
                                     min="1"
                                     max="10"
                                     required
+                                    onChange={handleChange}
+                                    value={formData.bathrooms}
                                 />
                                 <p className="text-primary-500 font-semibold">
                                     Bathrooms
@@ -206,8 +277,10 @@ const CreateListing = () => {
                                     className="border rounded-lg p-3"
                                     type="number"
                                     id="regularPrice"
-                                    min="2000"
+                                    min="1500"
                                     required
+                                    onChange={handleChange}
+                                    value={formData.regularPrice}
                                 />
                                 <p className="text-primary-500 font-semibold">
                                     Regular Price&nbsp;
@@ -221,8 +294,10 @@ const CreateListing = () => {
                                     className="border rounded-lg p-3"
                                     type="number"
                                     id="discountPrice"
-                                    min="1500"
+                                    min="1200"
                                     required
+                                    onChange={handleChange}
+                                    value={formData.discountPrice}
                                 />
                                 <p className="text-primary-500 font-semibold">
                                     Discount Price&nbsp;
