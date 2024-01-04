@@ -6,11 +6,14 @@ import {
 } from "firebase/storage";
 import { useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 import { app } from "../firebase";
 import { toast } from "react-toastify";
 
 const CreateListing = () => {
+    const { currentUser } = useSelector((state) => state.user);
+
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({
         imageUrls: [],
@@ -28,6 +31,8 @@ const CreateListing = () => {
     });
     const [imageUploadError, setImageUploadError] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     console.log(formData);
     console.log(files);
@@ -135,12 +140,38 @@ const CreateListing = () => {
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            setLoading(true);
+            setError(false);
+            const res = await fetch("/api/listing/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ ...formData, userRef: currentUser._id }),
+            });
+            const data = await res.json();
+            setLoading(false);
+            if (data.success === false) {
+                setError(data.message);
+                toast.error(data.message);
+            }
+        } catch (error) {
+            setError(error.message);
+            toast.error(error.message);
+            setLoading(false);
+        }
+    };
+
     return (
         <main className="p-3 max-w-4xl mx-auto">
             <h1 className="text-3xl text-end font-semibold text-primary-500 mt-7 mb-4">
                 Create Listing
             </h1>
-            <form className="flex flex-col">
+            <form className="flex flex-col" onSubmit={handleSubmit}>
                 <div className="flex flex-col gap-4">
                     {/* Fields */}
                     <input
@@ -377,7 +408,11 @@ const CreateListing = () => {
                     className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4"
                     disabled={uploading}
                 >
-                    {uploading ? "Uploading" : "Submit Listing"}
+                    {uploading
+                        ? "Uploading Image(s)"
+                        : loading
+                        ? "creating listing"
+                        : "Submit Listing"}
                 </button>
             </form>
         </main>
