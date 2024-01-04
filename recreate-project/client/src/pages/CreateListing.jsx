@@ -21,7 +21,7 @@ const CreateListing = () => {
         description: "",
         address: "",
         regularPrice: 1500,
-        discountPrice: 1200,
+        discountPrice: 0,
         type: "rent",
         bathrooms: 1,
         bedrooms: 1,
@@ -36,6 +36,7 @@ const CreateListing = () => {
 
     console.log(formData);
     console.log(files);
+    console.log(error);
 
     let numOfFiles = formData.imageUrls.length;
 
@@ -144,6 +145,21 @@ const CreateListing = () => {
         e.preventDefault();
 
         try {
+            // handle no image added
+            if (formData.imageUrls.length < 1) {
+                toast.error("You must upload at least an image");
+                return setError("You must upload at least an image");
+            }
+            // handle discount price higher than reg price
+            if (+formData.regularPrice < +formData.discountPrice) {
+                toast.error(
+                    "Discount price can't be higher than regular price"
+                );
+                return setError(
+                    "Discount price can't be higher than regular price"
+                );
+            }
+
             setLoading(true);
             setError(false);
             const res = await fetch("/api/listing/create", {
@@ -156,8 +172,9 @@ const CreateListing = () => {
             const data = await res.json();
             setLoading(false);
             if (data.success === false) {
+                console.log(data);
                 setError(data.message);
-                toast.error(data.message);
+                toast.error("Please check all fields are valid");
             }
         } catch (error) {
             setError(error.message);
@@ -320,23 +337,24 @@ const CreateListing = () => {
                                     </span>
                                 </p>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    className="border rounded-lg p-3"
-                                    type="number"
-                                    id="discountPrice"
-                                    min="1200"
-                                    required
-                                    onChange={handleChange}
-                                    value={formData.discountPrice}
-                                />
-                                <p className="text-primary-500 font-semibold">
-                                    Discount Price&nbsp;
-                                    <span className="font-light text-secondary-400 text-sm">
-                                        ($ / month)
-                                    </span>
-                                </p>
-                            </div>
+                            {formData.offer && (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        className="border rounded-lg p-3"
+                                        type="number"
+                                        id="discountPrice"
+                                        required
+                                        onChange={handleChange}
+                                        value={formData.discountPrice}
+                                    />
+                                    <p className="text-primary-500 font-semibold">
+                                        Discount Price&nbsp;
+                                        <span className="font-light text-secondary-400 text-sm">
+                                            ($ / month)
+                                        </span>
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -406,7 +424,7 @@ const CreateListing = () => {
                     )}
                 <button
                     className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4"
-                    disabled={uploading}
+                    disabled={uploading || loading}
                 >
                     {uploading
                         ? "Uploading Image(s)"
