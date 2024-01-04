@@ -7,6 +7,7 @@ import {
 import { useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { app } from "../firebase";
 import { toast } from "react-toastify";
@@ -34,9 +35,11 @@ const CreateListing = () => {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    console.log(formData);
-    console.log(files);
-    console.log(error);
+    const navigate = useNavigate();
+
+    // console.log(formData);
+    // console.log(files);
+    // console.log(error);
 
     let numOfFiles = formData.imageUrls.length;
 
@@ -171,11 +174,14 @@ const CreateListing = () => {
             });
             const data = await res.json();
             setLoading(false);
+
             if (data.success === false) {
                 console.log(data);
                 setError(data.message);
                 toast.error(data.message);
             }
+
+            navigate(`/listing/${data._id}`);
         } catch (error) {
             setError(error.message);
             toast.error(error.message);
