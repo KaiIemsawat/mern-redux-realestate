@@ -294,22 +294,6 @@ const Profile = () => {
                 </Link>
             </div>
 
-            {/* DELETE ACCOUNT / SIGNOUT */}
-            <div className="flex justify-between mt-5">
-                <span
-                    className="text-primary-500 hover:text-error duration-200 cursor-pointer"
-                    onClick={handleDeleteUser}
-                >
-                    Delete Account
-                </span>
-                <span
-                    className="text-primary-500 hover:text-warning duration-200 cursor-pointer"
-                    onClick={handleSignout}
-                >
-                    Sign out
-                </span>
-            </div>
-
             {/* SHOW LISTING */}
             <div className="flex mt-5 mb-4 flex-col gap-6">
                 {userListings.length === 0 ? (
@@ -383,6 +367,21 @@ const Profile = () => {
                             </div>
                         </div>
                     ))}
+            </div>
+            {/* DELETE ACCOUNT / SIGNOUT */}
+            <div className="flex justify-between mt-5">
+                <span
+                    className="text-primary-500 hover:text-error duration-200 cursor-pointer"
+                    onClick={handleDeleteUser}
+                >
+                    Delete Account
+                </span>
+                <span
+                    className="text-primary-500 hover:text-warning duration-200 cursor-pointer"
+                    onClick={handleSignout}
+                >
+                    Sign out
+                </span>
             </div>
         </div>
     );
