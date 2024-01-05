@@ -31,6 +31,8 @@ const Profile = () => {
     const [formData, setFormData] = useState({});
     const [showSuccessfulMsg, setShowSuccessfulMsg] = useState(false);
     const [updateSuccess, setUpdateSuccess] = useState(false);
+    const [showListingError, setShowListingError] = useState(false);
+    const [userListings, setUserListings] = useState([]);
 
     const dispatch = useDispatch();
 
@@ -153,6 +155,30 @@ const Profile = () => {
             dispatch(signoutUserFailure(error.message));
             toast.error(error.message);
         }
+    };
+
+    const handleShowListings = async () => {
+        try {
+            setShowListingError(false);
+
+            const res = await fetch(`/api/user/listings/${currentUser._id}`);
+            const data = await res.json();
+
+            if (data.success === false) {
+                setShowListingError(true);
+                toast.error(error.message);
+                return;
+            }
+
+            setUserListings(data);
+        } catch (error) {
+            setShowListingError(true);
+            toast.error(error.message);
+        }
+    };
+
+    const handleCloseListing = async () => {
+        await setUserListings([]);
     };
 
     return (
@@ -282,6 +308,81 @@ const Profile = () => {
                 >
                     Sign out
                 </span>
+            </div>
+
+            {/* SHOW LISTING */}
+            <div className="flex mt-5 mb-4 flex-col gap-6">
+                {userListings.length === 0 ? (
+                    <button
+                        className="border border-optional-400 text-optional-500 p-3 rounded-lg uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center"
+                        onClick={handleShowListings}
+                    >
+                        Show Listings
+                    </button>
+                ) : (
+                    <button
+                        className="border border-optional-400 text-optional-500 p-3 rounded-lg uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center"
+                        onClick={handleCloseListing}
+                    >
+                        Close Listing
+                    </button>
+                )}
+
+                {userListings &&
+                    userListings.length > 0 &&
+                    userListings.map((listing) => (
+                        <div
+                            key={listing._id}
+                            className="border border-secondary-300 p-2 rounded-lg flex justify-between"
+                        >
+                            <div className="flex gap-4">
+                                <Link to={`/listing/${listing._id}`}>
+                                    <img
+                                        className="h-24 w-36 object-cover rounded-md"
+                                        src={listing.imageUrls[0]}
+                                        alt="listingImageCover"
+                                    />
+                                </Link>
+                                <div>
+                                    <Link to={`/listing/${listing._id}`}>
+                                        <p className="text-primary-500 font-semibold text-md hover:text-effect-300">
+                                            {listing.name}
+                                        </p>
+                                    </Link>
+                                    <p className="text-secondary-400 font-light text-sm">
+                                        {listing.bedrooms}&nbsp;
+                                        <span className="text-secondary-400 font-semibold">
+                                            {listing.bedrooms > 1
+                                                ? "bedrooms"
+                                                : "bedroom"}
+                                        </span>
+                                    </p>
+                                    <p className="text-secondary-400 font-light text-sm">
+                                        {listing.bathrooms}&nbsp;
+                                        <span className="text-secondary-400 font-semibold">
+                                            {listing.bathrooms > 1
+                                                ? "bathrooms"
+                                                : "bathroom"}
+                                        </span>
+                                    </p>
+                                    <p className="text-secondary-400 font-light text-sm">
+                                        <span className="text-secondary-400 font-semibold">
+                                            Location :
+                                        </span>
+                                        &nbsp;{listing.address}
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col justify-between">
+                                <button className="border border-optional-400 text-optional-500 p-2 rounded-md uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center">
+                                    Edit
+                                </button>
+                                <button className="border border-error text-error p-2 rounded-md uppercase hover:bg-error  hover:text-effect-300 duration-200 w-full text-center">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
             </div>
         </div>
     );
