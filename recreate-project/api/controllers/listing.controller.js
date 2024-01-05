@@ -35,3 +35,30 @@ export const deleteListing = async (req, res, next) => {
         next(error);
     }
 };
+
+export const updateListing = async (req, res, next) => {
+    const listing = await Listing.findById(req.params.id);
+
+    if (!listing) {
+        return next(errorHandle(404, "Listing not found..!"));
+    }
+    if (req.user.userId !== listing.userRef) {
+        return next(errorHandle(401, "You may only edit your own listings..!"));
+    }
+
+    try {
+        const updated_Listing = await Listing.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        );
+        if (req.body.discountPrice > req.body.regularPrice) {
+            return next(
+                errorHandle(422, "Discount Price can't exceed Regular Price")
+            );
+        }
+        res.status(200).json(updated_Listing);
+    } catch (error) {
+        next(error);
+    }
+};
