@@ -379,9 +379,11 @@ const Profile = () => {
                                 </div>
                             </div>
                             <div className="flex flex-col justify-between">
-                                <button className="border border-optional-400 text-optional-500 p-2 rounded-md uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center">
-                                    Edit
-                                </button>
+                                <Link to={`/update-listing/${listing._id}`}>
+                                    <button className="border border-optional-400 text-optional-500 p-2 rounded-md uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center">
+                                        Edit
+                                    </button>
+                                </Link>
                                 <button
                                     className="border border-error text-error p-2 rounded-md uppercase hover:bg-error  hover:text-effect-300 duration-200 w-full text-center"
                                     onClick={() =>
