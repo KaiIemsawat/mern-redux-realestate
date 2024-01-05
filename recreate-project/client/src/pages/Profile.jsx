@@ -181,6 +181,27 @@ const Profile = () => {
         await setUserListings([]);
     };
 
+    const handleListingDelete = async (listingId) => {
+        try {
+            const res = await fetch(`api/listing/delete/${listingId}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+            if (data.success === false) {
+                console.log(data.message);
+                toast.error(error.message);
+                return;
+            }
+            // Update user listing list
+            setUserListings((prev) =>
+                prev.filter((listing) => listing._id !== listingId)
+            );
+        } catch (error) {
+            toast.error(error.message);
+            console.log(error.message);
+        }
+    };
+
     return (
         <div className="p-3 max-w-lg mx-auto">
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -361,23 +382,29 @@ const Profile = () => {
                                 <button className="border border-optional-400 text-optional-500 p-2 rounded-md uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center">
                                     Edit
                                 </button>
-                                <button className="border border-error text-error p-2 rounded-md uppercase hover:bg-error  hover:text-effect-300 duration-200 w-full text-center">
+                                <button
+                                    className="border border-error text-error p-2 rounded-md uppercase hover:bg-error  hover:text-effect-300 duration-200 w-full text-center"
+                                    onClick={() =>
+                                        handleListingDelete(listing._id)
+                                    }
+                                >
                                     Delete
                                 </button>
                             </div>
                         </div>
                     ))}
             </div>
+
             {/* DELETE ACCOUNT / SIGNOUT */}
             <div className="flex justify-between mt-5">
                 <span
-                    className="text-primary-500 hover:text-error duration-200 cursor-pointer"
+                    className="text-secondary-300 hover:text-error duration-200 cursor-pointer"
                     onClick={handleDeleteUser}
                 >
                     Delete Account
                 </span>
                 <span
-                    className="text-primary-500 hover:text-warning duration-200 cursor-pointer"
+                    className="text-secondary-300 hover:text-warning duration-200 cursor-pointer"
                     onClick={handleSignout}
                 >
                     Sign out
