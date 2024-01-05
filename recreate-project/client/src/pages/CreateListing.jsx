@@ -181,7 +181,7 @@ const CreateListing = () => {
                 toast.error(data.message);
             }
 
-            navigate(`/listing/${data._id}`);
+            navigate(`/listings/${data._id}`);
         } catch (error) {
             setError(error.message);
             toast.error(error.message);
