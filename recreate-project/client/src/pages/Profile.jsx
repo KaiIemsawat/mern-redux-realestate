@@ -350,7 +350,7 @@ const Profile = () => {
                                 </Link>
                                 <div>
                                     <Link to={`/listing/${listing._id}`}>
-                                        <p className="text-primary-500 font-semibold text-md hover:text-effect-300">
+                                        <p className="text-primary-500 font-semibold text-md hover:text-effect-300 overflow-hidden truncate w-32 sm:w-52">
                                             {listing.name}
                                         </p>
                                     </Link>
@@ -370,7 +370,7 @@ const Profile = () => {
                                                 : "bathroom"}
                                         </span>
                                     </p>
-                                    <p className="text-secondary-400 font-light text-sm">
+                                    <p className="text-secondary-400 font-light text-sm overflow-hidden truncate w-32 sm:w-52">
                                         <span className="text-secondary-400 font-semibold">
                                             Location :
                                         </span>
@@ -380,12 +380,12 @@ const Profile = () => {
                             </div>
                             <div className="flex flex-col justify-between">
                                 <Link to={`/update-listing/${listing._id}`}>
-                                    <button className="border border-optional-400 text-optional-500 p-2 rounded-md uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center">
+                                    <button className="border border-optional-400 text-optional-500 px-3 py-2 rounded-md uppercase hover:bg-optional-400  hover:text-effect-300 duration-200 w-full text-center">
                                         Edit
                                     </button>
                                 </Link>
                                 <button
-                                    className="border border-error text-error p-2 rounded-md uppercase hover:bg-error  hover:text-effect-300 duration-200 w-full text-center"
+                                    className="border border-error text-error px-3 py-2 rounded-md uppercase hover:bg-error  hover:text-effect-300 duration-200 w-full text-center"
                                     onClick={() =>
                                         handleListingDelete(listing._id)
                                     }

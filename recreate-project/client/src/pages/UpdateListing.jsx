@@ -4,10 +4,10 @@ import {
     ref,
     uploadBytesResumable,
 } from "firebase/storage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaWindowClose } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { app } from "../firebase";
 import { toast } from "react-toastify";
@@ -36,10 +36,27 @@ const UpdateListing = () => {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const params = useParams();
 
-    // console.log(formData);
-    // console.log(files);
-    // console.log(error);
+    useEffect(() => {
+        const fetchListing = async () => {
+            const listingId = params.listingId; // params.thisName 'thisName' needs to be the same as in 'App.jsx'
+            const res = await fetch(`/api/listing/get/${listingId}`);
+
+            const data = await res.json();
+            setFormData(data);
+
+            if (data.success === false) {
+                setError(data.message);
+                console.log("DATA -- ", data);
+                toast.error(error.message);
+                console.log("ERROR -- ", error);
+                return;
+            }
+            setFormData(data);
+        };
+        fetchListing();
+    }, []);
 
     let numOfFiles = formData.imageUrls.length;
 
@@ -165,8 +182,8 @@ const UpdateListing = () => {
 
             setLoading(true);
             setError(false);
-            const res = await fetch("/api/listing/create", {
-                method: "POST",
+            const res = await fetch(`/api/listing/update/${params.listingId}`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
