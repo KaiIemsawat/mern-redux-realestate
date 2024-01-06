@@ -4,14 +4,16 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
-import { Navigation } from "swiper/modules";
+import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css/bundle";
+import { FaCopy } from "react-icons/fa";
 
 const Listing = () => {
     SwiperCore.use([Navigation]);
     const [listing, setListing] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
     const params = useParams();
 
     useEffect(() => {
@@ -48,10 +50,16 @@ const Listing = () => {
             )}
             {listing && !loading && !error && (
                 <>
-                    <Swiper navigation loop={true}>
+                    <Swiper
+                        pagination={{
+                            clickable: true,
+                        }}
+                        loop={true}
+                        modules={[Pagination]}
+                    >
                         {listing.imageUrls.map((url) => (
                             <SwiperSlide>
-                                <div className="h-[480px] w-full bg-slate-100">
+                                <div className="h-[360px] w-full bg-slate-100">
                                     <img
                                         src={url}
                                         alt="images"
@@ -61,6 +69,115 @@ const Listing = () => {
                             </SwiperSlide>
                         ))}
                     </Swiper>
+                    <div
+                        className="fixed top-[90px] right-[20px] z-10 border rounded-full w-8 h-8 justify-center items-center flex bg-secondary-50 opacity-20 hover:opacity-60 duration-200 cursor-pointer"
+                        title="copy link"
+                    >
+                        <FaCopy
+                            className="text-secondary-400"
+                            onClick={() => {
+                                navigator.clipboard.writeText(
+                                    window.location.href
+                                );
+                                setIsCopied(true);
+                                setTimeout(() => {
+                                    setIsCopied(false);
+                                }, 2000);
+                            }}
+                        />
+                    </div>
+                    <div className="flex flex-col w-[90%] m-auto my-4">
+                        {/* Name / Address */}
+                        <div className="p-2">
+                            <h2 className="text-primary-500 text-4xl font-light overflow-hidden truncate">
+                                {listing.name}
+                            </h2>
+                            <p className="text-secondary-400 overflow-hidden truncate">
+                                {listing.address}
+                            </p>
+                        </div>
+
+                        {/* Details */}
+                        <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-between">
+                            <div class="sm:w-[240px] py-4 px-6 bg-secondary-50 rounded-lg">
+                                <p className="font-semibold text-primary-800 text-md pb-2">
+                                    Details
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    <span className="font-semibold text-secondary-400 text-md">
+                                        Bedrooms:{" "}
+                                    </span>
+                                    {listing.bedrooms}
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    <span className="font-semibold text-secondary-400 text-md">
+                                        Bathrooms:{" "}
+                                    </span>
+                                    {listing.bathrooms}
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    <span className="font-semibold text-secondary-400 text-md">
+                                        Furnished:{" "}
+                                    </span>
+                                    {listing.furnished ? "yes" : "no"}
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    <span className="font-semibold text-secondary-400 text-md">
+                                        Parking lot:{" "}
+                                    </span>
+                                    {listing.parking ? "yes" : "no"}
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    <span className="font-semibold text-secondary-400 text-md">
+                                        Sale/Rent:{" "}
+                                    </span>
+                                    {listing.type === "sale"
+                                        ? "for sale"
+                                        : "for rent"}
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    <span className="font-semibold text-secondary-400 text-md">
+                                        Rate:&nbsp;
+                                    </span>
+                                    ${listing.regularPrice} / m
+                                </p>
+                                {listing.offer ? (
+                                    <>
+                                        <br />
+                                        <p className="font-semibold text-secondary-500">
+                                            Special Deal
+                                        </p>
+                                        <p className="font-semibold text-secondary-500">
+                                            $
+                                            {listing.regularPrice -
+                                                listing.discountPrice}
+                                            &nbsp;Discount
+                                        </p>
+                                        <p className="font-semibold text-secondary-500">
+                                            <span className="text-optional-500 font-bold">
+                                                Now:&nbsp;
+                                            </span>
+                                            ${listing.discountPrice} / m
+                                        </p>
+                                    </>
+                                ) : null}
+                            </div>
+
+                            {/* Description */}
+                            <div className="w-full px-6 py-4 bg-optional-100 rounded-lg">
+                                <p className="font-semibold text-primary-800 pb-2 text-md">
+                                    Description
+                                </p>
+                                <p className="text-primary-800 font-light">
+                                    {listing.description}
+                                </p>
+                            </div>
+                        </div>
+
+                        <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4">
+                            Contact Landloard
+                        </button>
+                    </div>
                 </>
             )}
         </main>
