@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingItem from "../components/ListingItem";
 
 const Search = () => {
     const [sidebarData, setSidebarData] = useState({
@@ -13,8 +14,6 @@ const Search = () => {
     });
     const [loading, setLoading] = useState(false);
     const [listings, setListings] = useState([]);
-
-    console.log(listings);
 
     const navigate = useNavigate();
 
@@ -120,7 +119,7 @@ const Search = () => {
     return (
         <div className="flex flex-col md:flex-row">
             {/* Left section */}
-            <div className="p-7 border-b-2 md:border-b-0 md:border-r-2 md:min-h-screen">
+            <div className=" p-7 border-b-2 md:border-b-0 md:border-r-2 md:min-h-screen md:max-w-[340px] md:min-w-[340px]">
                 <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
                     <div className="flex flex-col gap-2">
                         <label className="whitespace-nowrap font-semibold text-primary-500">
@@ -141,7 +140,7 @@ const Search = () => {
                         <label className=" font-semibold text-primary-500">
                             Type:
                         </label>
-                        <div className="grid grid-cols-3 md:grid-cols-2 gap-x-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                             <div className="flex gap-2 items-center">
                                 <input
                                     className="w-5"
@@ -151,7 +150,7 @@ const Search = () => {
                                     onChange={handleChange}
                                 />
                                 <span className="text-secondary-700">
-                                    Rent & Sale
+                                    Rent&nbsp;&&nbsp;Sale
                                 </span>
                             </div>
                             <div className="flex gap-2 items-center">
@@ -204,7 +203,7 @@ const Search = () => {
                                     onChange={handleChange}
                                 />
                                 <span className="text-secondary-700">
-                                    Parking Lot
+                                    Parking&nbsp;Lot
                                 </span>
                             </div>
                             <div className="flex gap-2 items-center">
@@ -254,8 +253,25 @@ const Search = () => {
             {/* Right section */}
             <div className="p-7">
                 <h2 className="text-3xl font-semibold text-primary-500">
-                    Listing Results:
+                    Listings:
                 </h2>
+                <div className="py-2 flex flex-wrap gap-3">
+                    {!loading && listings.length === 0 && (
+                        <p className="text-xl text-optional-500 font-light">
+                            No listing found...
+                        </p>
+                    )}
+                    {loading && (
+                        <p className="text-xl text-optional-500 font-light">
+                            Loading...
+                        </p>
+                    )}
+                    {!loading &&
+                        listings &&
+                        listings.map((listing) => (
+                            <ListingItem key={listing._id} listing={listing} />
+                        ))}
+                </div>
             </div>
         </div>
     );

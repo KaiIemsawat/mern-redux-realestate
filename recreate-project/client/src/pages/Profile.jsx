@@ -354,6 +354,12 @@ const Profile = () => {
                                             {listing.name}
                                         </p>
                                     </Link>
+                                    <p className="text-secondary-400 font-light text-sm overflow-hidden truncate w-32 sm:w-52">
+                                        <span className="text-secondary-400 font-semibold">
+                                            Location :
+                                        </span>
+                                        &nbsp;{listing.address}
+                                    </p>
                                     <p className="text-secondary-400 font-light text-sm">
                                         {listing.bedrooms}&nbsp;
                                         <span className="text-secondary-400 font-semibold">
@@ -369,12 +375,6 @@ const Profile = () => {
                                                 ? "bathrooms"
                                                 : "bathroom"}
                                         </span>
-                                    </p>
-                                    <p className="text-secondary-400 font-light text-sm overflow-hidden truncate w-32 sm:w-52">
-                                        <span className="text-secondary-400 font-semibold">
-                                            Location :
-                                        </span>
-                                        &nbsp;{listing.address}
                                     </p>
                                 </div>
                             </div>

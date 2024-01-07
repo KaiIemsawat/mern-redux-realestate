@@ -105,7 +105,7 @@ const Listing = () => {
 
                         {/* Details */}
                         <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-between">
-                            <div className="sm:w-[240px] py-4 px-6 bg-secondary-50 rounded-lg">
+                            <div className="sm:min-w-[200px] sm:max-w-[200px] py-4 px-6 bg-secondary-50 rounded-lg">
                                 <p className="font-semibold text-primary-800 text-md pb-2">
                                     Details
                                 </p>
@@ -170,7 +170,7 @@ const Listing = () => {
                             </div>
 
                             {/* Description */}
-                            <div className="w-full px-6 py-4 bg-optional-100 rounded-lg">
+                            <div className="w-full px-6 py-4 bg-optional-100 rounded-lg sm:max-w-[80%] lg:max-w-[95%]">
                                 <p className="font-semibold text-primary-800 pb-2 text-md">
                                     Description
                                 </p>
