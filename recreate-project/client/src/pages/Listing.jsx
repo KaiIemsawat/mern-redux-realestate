@@ -7,6 +7,9 @@ import SwiperCore from "swiper";
 import { Pagination, Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import { FaCopy } from "react-icons/fa";
+import { useSelector } from "react-redux";
+
+import Contact from "../components/Contact";
 
 const Listing = () => {
     SwiperCore.use([Navigation]);
@@ -14,7 +17,11 @@ const Listing = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
+    const [contact, setContact] = useState(false);
+
     const params = useParams();
+
+    const { currentUser } = useSelector((state) => state.user);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -39,7 +46,6 @@ const Listing = () => {
         fetchListing();
     }, [params.listingId]);
 
-    console.log(listing);
     return (
         <main>
             {loading && <p className="text-center my-7 text-2xl">LOADING...</p>}
@@ -58,7 +64,7 @@ const Listing = () => {
                         modules={[Pagination]}
                     >
                         {listing.imageUrls.map((url) => (
-                            <SwiperSlide>
+                            <SwiperSlide key={url}>
                                 <div className="h-[360px] w-full bg-slate-100">
                                     <img
                                         src={url}
@@ -88,7 +94,7 @@ const Listing = () => {
                     </div>
                     <div className="flex flex-col w-[90%] m-auto my-4">
                         {/* Name / Address */}
-                        <div className="p-2">
+                        <div className="py-2">
                             <h2 className="text-primary-500 text-4xl font-light overflow-hidden truncate">
                                 {listing.name}
                             </h2>
@@ -99,7 +105,7 @@ const Listing = () => {
 
                         {/* Details */}
                         <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-between">
-                            <div class="sm:w-[240px] py-4 px-6 bg-secondary-50 rounded-lg">
+                            <div className="sm:w-[240px] py-4 px-6 bg-secondary-50 rounded-lg">
                                 <p className="font-semibold text-primary-800 text-md pb-2">
                                     Details
                                 </p>
@@ -174,9 +180,19 @@ const Listing = () => {
                             </div>
                         </div>
 
-                        <button className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4">
-                            Contact Landloard
-                        </button>
+                        {currentUser &&
+                            listing.userRef !== currentUser._id &&
+                            !contact && (
+                                <button
+                                    className="bg-primary-500 text-effect-300 p-3 rounded-lg uppercase hover:bg-effect-300 hover:text-primary-500 duration-200 mt-4"
+                                    onClick={() => {
+                                        setContact(true);
+                                    }}
+                                >
+                                    Contact Landlord
+                                </button>
+                            )}
+                        {contact && <Contact listing={listing} />}
                     </div>
                 </>
             )}
