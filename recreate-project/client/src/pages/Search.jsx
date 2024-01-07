@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Search = () => {
@@ -11,8 +11,56 @@ const Search = () => {
         sort: "created_at",
         order: "desc",
     });
+    const [loading, setLoading] = useState(false);
+    const [listings, setListings] = useState([]);
+
+    console.log(listings);
 
     const navigate = useNavigate();
+
+    // dynamicly change data in fields and url
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+
+        const searchTermFromUrl = urlParams.get("searchTerm");
+        const typeFromUrl = urlParams.get("type");
+        const parkingFromUrl = urlParams.get("parking");
+        const furnishedFromUrl = urlParams.get("furnished");
+        const offerFromUrl = urlParams.get("offer");
+        const sortFromUrl = urlParams.get("sort");
+        const orderFromUrl = urlParams.get("order");
+
+        if (
+            searchTermFromUrl ||
+            typeFromUrl ||
+            parkingFromUrl ||
+            furnishedFromUrl ||
+            offerFromUrl ||
+            sortFromUrl ||
+            orderFromUrl
+        ) {
+            setSidebarData({
+                searchTerm: searchTermFromUrl || "",
+                type: typeFromUrl || "all",
+                parking: parkingFromUrl === "true" ? true : false,
+                furnished: furnishedFromUrl === "true" ? true : false,
+                offer: offerFromUrl === "true" ? true : false,
+                sort: sortFromUrl || "created_at",
+                order: orderFromUrl || "desc",
+            });
+        }
+
+        const fetchListings = async () => {
+            setLoading(true);
+            const searchQuery = urlParams.toString();
+            const res = await fetch(`/api/listing/get?${searchQuery}`);
+            const data = await res.json();
+            setListings(data);
+            setLoading(false);
+        };
+
+        fetchListings();
+    }, [location.search]);
 
     const handleChange = (e) => {
         // Set value to one of 'all' or 'rent' or 'sale'
