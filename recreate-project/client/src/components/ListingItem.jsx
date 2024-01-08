@@ -40,12 +40,13 @@ const ListingItem = ({ listing }) => {
                             : month
                         </span>
                     </p>
-                    <p className="text-secondary-400 font-light text-sm line-clamp-3 my-2">
+                    <p className="text-secondary-400 font-light text-sm line-clamp-1 my-2">
                         <span className="text-secondary-400 font-semibold">
                             Description :&nbsp;
                         </span>
                         {listing.description}
                     </p>
+                    <div className="w-[80%] border-t-2 m-auto my-2"></div>
                     {listing.offer ? (
                         <div className="">
                             <p className="font-semibold text-secondary-500">
@@ -62,7 +63,19 @@ const ListingItem = ({ listing }) => {
                                 ${listing.discountPrice} / m
                             </p>
                         </div>
-                    ) : null}
+                    ) : (
+                        <div>
+                            <p className="font-semibold text-secondary-500">
+                                No deal at the moment
+                            </p>
+                            <p className="text-secondary-400 font-light text-sm">
+                                Keep checking
+                            </p>
+                            <p className="text-secondary-400 font-light text-sm">
+                                Deals may available anytime...
+                            </p>
+                        </div>
+                    )}
                 </div>
             </Link>
         </div>
