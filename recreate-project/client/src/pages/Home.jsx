@@ -4,12 +4,13 @@ import SwiperCore from "swiper";
 import { Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
+import ListingItem from "../components/ListingItem";
 
 const Home = () => {
     const [offerListings, setOfferListings] = useState([]);
     const [saleListings, setSaleListings] = useState([]);
     const [rentListings, setRentListings] = useState([]);
-    SwiperCore.use([Navigation]);
+    SwiperCore.use([Navigation]); // might not need
 
     useEffect(() => {
         const fetchOfferListings = async () => {
@@ -100,7 +101,33 @@ const Home = () => {
                     ))}
                 </Swiper>
             )}
+
             {/* Listing result for offer, sale and rent */}
+            <div className="max-w-6xl mx-auto px-2 flex flex-col gap-8 my-4">
+                {offerListings && offerListings.length > 0 && (
+                    <div>
+                        <div className="mb-4">
+                            <h2 className="text-2xl font-semibold text-primary-500">
+                                Recent offers
+                            </h2>
+                            <Link
+                                className="font-light text-primary-500 hover:text-secondary-300"
+                                to={"/search?offer=true"}
+                            >
+                                Show more offer
+                            </Link>
+                        </div>
+                        <div className="flex flex-wrap gap-8">
+                            {offerListings.map((listing) => (
+                                <ListingItem
+                                    listing={listing}
+                                    key={listing._id}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
